@@ -1,0 +1,76 @@
+---
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
+name: Tracetest Agent
+description: Start a Tracetest agent to run trace based tests
+branding:
+  icon: eye
+  color: purple
+
+inputs:
+  apiKey:
+    description: 'Tracetest agent API Key'
+    required: true
+  sleep:
+    description: 'Seconds to wait before action finished (default as `3`)'
+    required: false
+    default: '3'
+
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#outputs-for-composite-actions
+outputs:
+  log:
+    description: 'Path to agent log file'
+    value: ${{ steps.main.outputs.log }}
+
+# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runs-for-composite-actions
+runs:
+  using: composite
+  steps:
+    - id: install-tracetest
+      name: Install Tracetest CLI
+      shell: bash
+      run: |
+        curl -L https://tracetest.io/install | bash
+    - id: start-agent
+      name: Start Tracetest Agent
+      shell: bash
+      run: |
+        # implementation details
+
+        # Group stdin to stderr with title
+        # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#grouping-log-lines
+        #   $1: group title
+        #   stdin: logs
+        #   stderr: grouped logs
+        #   $?: 0 if successful and non-zero otherwise
+        function kit::wf::group {
+            echo "::group::$1"      >&2
+            echo "$(< /dev/stdin)"  >&2
+            echo '::endgroup::'     >&2
+        }
+
+        # Set stdin as value to output of current step with given name
+        # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-output-parameter
+        # https://renehernandez.io/snippets/multiline-strings-as-a-job-output-in-github-actions/
+        #   $1: output name
+        #   $2: masked value in logs
+        #   stdin: output value
+        #   stderr: grouped logs
+        #   $?: 0 if successful and non-zero otherwise
+        function kit::wf::output {
+            local val
+            val="$(< /dev/stdin)"
+            { # https://www.gnu.org/software/bash/manual/bash.html#Command-Grouping
+                echo "$1<<__GITHUB_OUTPUT__"
+                echo "$val"
+                echo '__GITHUB_OUTPUT__'
+            } >> "$GITHUB_OUTPUT"
+            kit::wf::group "🖨️ step output '$1' has been set" <<< "${2:-$val}"
+        }
+
+        AGENT_LOG="${{ runner.temp }}/tracetest-agent.$RANDOM.log"
+        kit::wf::group 'Run backgroup agent daemon' \
+          <<<"tracetest start --api-key '${{ inputs.apiKey }}' "
+        nohup tracetest start --api-key '${{ inputs.apiKey }}' < /dev/null &> "$AGENT_LOG" &
+        kit::wf::output 'log' <<< "$AGENT_LOG"
+        sleep '${{ inputs.sleep }}'
+        kit::wf::group 'Current agent log' < "$AGENT_LOG"
