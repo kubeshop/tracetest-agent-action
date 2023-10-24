@@ -33,7 +33,7 @@ runs:
       name: Install Tracetest CLI
       shell: bash
       run: |
-        curl -L https://tracetest.io/install | bash
+        curl -L https://tracetest.io/install | bash -s -- '${{ inputs.version }}'
     - id: start-agent
       name: Start Tracetest Agent
       shell: bash
