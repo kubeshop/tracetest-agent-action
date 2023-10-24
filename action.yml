@@ -7,6 +7,9 @@ branding:
   color: purple
 
 inputs:
+  version:
+    description: 'Tracetest CLI version to install. Leave empty to use latest'
+    default: ''
   apiKey:
     description: 'Tracetest agent API Key'
     required: true
@@ -14,6 +17,7 @@ inputs:
     description: 'Seconds to wait before action finished (default as `3`)'
     required: false
     default: '3'
+
 
 # https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#outputs-for-composite-actions
 outputs:
