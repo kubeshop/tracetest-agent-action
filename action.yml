@@ -13,6 +13,9 @@ inputs:
   apiKey:
     description: 'Tracetest agent API Key'
     required: true
+  params:
+    description: 'Extra parameters to pass to the tracetest start command'
+    default: ''
   sleep:
     description: 'Seconds to wait before action finished (default as `3`)'
     required: false
@@ -73,8 +76,8 @@ runs:
 
         AGENT_LOG="${{ runner.temp }}/tracetest-agent.$RANDOM.log"
         kit::wf::group 'Run backgroup agent daemon' \
-          <<<"tracetest start --api-key '${{ inputs.apiKey }}' "
-        nohup tracetest start --api-key '${{ inputs.apiKey }}' < /dev/null &> "$AGENT_LOG" &
+          <<<"tracetest start --api-key '${{ inputs.apiKey }}' ${{ inputs.params }}"
+        nohup tracetest start --api-key '${{ inputs.apiKey }}' ${{ inputs.params }} < /dev/null &> "$AGENT_LOG" &
         kit::wf::output 'log' <<< "$AGENT_LOG"
         sleep '${{ inputs.sleep }}'
         kit::wf::group 'Current agent log' < "$AGENT_LOG"
