@@ -10,8 +10,17 @@ inputs:
   version:
     description: 'Tracetest CLI version to install. Leave empty to use latest'
     default: ''
+  token:
+    description: 'Tracetest CLI user token'
+    required: true
+  # organization:
+  #   description: 'Tracetest CLI organization'
+  #   required: true
+  # environment:
+  #   description: 'Tracetest CLI environment'
+  #   required: true
   apiKey:
-    description: 'Tracetest agent API Key'
+    description: 'Agent API Key'
     required: true
   params:
     description: 'Extra parameters to pass to the tracetest start command'
@@ -81,3 +90,6 @@ runs:
         kit::wf::output 'log' <<< "$AGENT_LOG"
         sleep '${{ inputs.sleep }}'
         kit::wf::group 'Current agent log' < "$AGENT_LOG"
+        kit::wf::group 'Configure CLI' \
+          <<<"tracetest configure --token '${{ inputs.token }}' ${{ inputs.params }}"
+          tracetest configure --token '${{ inputs.token }}' ${{ inputs.params }}
