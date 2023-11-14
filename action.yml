@@ -1,7 +1,7 @@
 ---
 # https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
 name: Tracetest Agent
-description: Start a Tracetest agent to run trace based tests
+description: GitHub Action for starting Tracetest Agent to run trace-based tests.
 branding:
   icon: eye
   color: purple
