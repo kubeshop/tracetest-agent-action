@@ -1,6 +1,6 @@
 # kubeshop/tracetest-agent-action
 
-> [GitHub Action](https://docs.github.com/en/actions) for running [Tracetest Agent](https://docs.tracetest.io/getting-started/installation#install-the-tracetest-agent) to trigger trace-based tests against [Tracetest](https://tracetest.io/).
+> [GitHub Action](https://docs.github.com/en/actions) for running [Tracetest Agent](https://docs.tracetest.io/getting-started/installation#install-the-tracetest-agent) and using [Tracetest CLI](https://docs.tracetest.io/getting-started/open#trigger-1) to trigger trace-based tests against [Tracetest](https://tracetest.io/).
 
 Placing `use: kubeshop/tracetest-agent-action@v1` into a GitHub Action workflow gives you a simple way to run Tracetest Agent. The action installs the Tracetest CLI and starts Tracetest Agent.
 
