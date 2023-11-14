@@ -1,0 +1,30 @@
+name: example-basic
+
+# This workflow represents a set of basic trace-based tests
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  trace-based-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run Tracetest Agent
+        uses: kubeshop/tracetest-agent-action@v1
+        with:
+          apiKey: ${{ secrets.TRACETEST_API_KEY }}
+          token: ${{ secrets.TRACETEST_TOKEN}}
+
+      - name: Start Docker Compose
+        run: |
+          docker compose up -d
+
+      - name: Run trace-based tests
+        run: |
+          tracetest run --file path-to-dir/test.yml

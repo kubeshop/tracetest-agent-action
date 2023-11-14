@@ -13,12 +13,6 @@ inputs:
   token:
     description: 'Tracetest CLI user token'
     required: true
-  # organization:
-  #   description: 'Tracetest CLI organization'
-  #   required: true
-  # environment:
-  #   description: 'Tracetest CLI environment'
-  #   required: true
   apiKey:
     description: 'Agent API Key'
     required: true
